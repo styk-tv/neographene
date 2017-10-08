@@ -1,12 +1,16 @@
 import graphene
 from neomodel import StructuredNode, UniqueIdProperty, StringProperty
 
+from neographene.neographene import graphene_types, neomodel_types
 
-class TestQuery(graphene.ObjectType):
-    uid = graphene.ID()
-    text = graphene.String()
+
+class TestSchema(graphene.ObjectType):
+    def __init__(self):
+        for index, type in enumerate(graphene_types):
+            setattr(self, "field" + str(index), type)
 
 
 class TestNode(StructuredNode):
-    uid = UniqueIdProperty()
-    text = StringProperty(required=True)
+    def __init__(self):
+        for index, type in enumerate(neomodel_types):
+            setattr(self, "field" + str(index), type)

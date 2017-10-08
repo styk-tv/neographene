@@ -1,4 +1,7 @@
-from neographene.neographene import neomodel_to_graphene_schema
-from tests.fixtures import TestNode
+from neographene.neographene import SchemaFactory, NodeFactory
+from tests.fixtures import TestNode, TestSchema
 
-print(neomodel_to_graphene_schema(TestNode))
+
+def test_print():
+    assert SchemaFactory(TestNode()).__dict__ == TestSchema()
+    assert NodeFactory(TestSchema()).__dict__ == TestNode()

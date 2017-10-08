@@ -1,5 +1,3 @@
-from typing import Union
-
 import graphene
 import neomodel
 from graphene.types import datetime, json
@@ -15,21 +13,13 @@ neomodel_to_graphene_dict = {k: v for k, v in zip(neomodel_types, graphene_types
 graphene_to_neomodel_dict = {k: v for k, v in zip(graphene_types, neomodel_types)}  # graphene -> neomodel
 
 
-def schema_to_neomodel(schema: Union[graphene.ObjectType, graphene.Interface]) -> neomodel.StructuredNode:
-    neomodel_dict = {}
-    for field_name, field_instance in dict(schema.fields).items():
-        neomodel_dict[field_name] = graphene_to_neomodel_dict[field_instance.__class__]
-
-    return graphene.ObjectType(neomodel_dict)
+class SchemaFactory(graphene.ObjectType, object):
+    def __init__(self, neomodel: StructuredNode):
+        for field_name, field_instance in neomodel.__dict__.items():
+            setattr(self, field_name, neomodel_to_graphene_dict[field_instance])
 
 
-def neomodel_to_graphene_schema(neomodel: StructuredNode) -> graphene.ObjectType:
-    graphene_schema_dict = {}
-    for field_name, field_instance in dict(neomodel.__all_properties__).items():
-        graphene_schema_dict[field_name] = neomodel_to_graphene_dict[field_instance.__class__]
-
-    return graphene.ObjectType(graphene_schema_dict)
-
-
-def class_factory():
-    pass
+class NodeFactory(neomodel.StructuredNode, object):
+    def __init__(self, schema: graphene.ObjectType):
+        for field_name, field_instance in schema.__dict__.items():
+            setattr(self, field_name, graphene_to_neomodel_dict[field_instance])
