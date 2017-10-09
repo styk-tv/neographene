@@ -1,7 +1,11 @@
-from neographene.neographene import SchemaFactory, NodeFactory
 from tests.fixtures import TestNode, TestSchema
 
+from neographene.neographene import NodeFactory, SchemaFactory
 
-def test_print():
-    assert SchemaFactory(TestNode()).__dict__ == TestSchema()
-    assert NodeFactory(TestSchema()).__dict__ == TestNode()
+
+def test_schmea_factory():
+    assert SchemaFactory(TestNode()) == TestSchema()
+
+
+def test_node_factory():
+    assert NodeFactory(TestSchema()) == TestNode()
